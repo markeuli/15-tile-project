@@ -75,7 +75,7 @@ while True:
         if 0 <= row < GRID_SIZE and 0 <= col < GRID_SIZE:
             pygame.draw.rect(screen, BLACK, (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE))
             pygame.draw.rect(screen, GREY, (col * TILE_SIZE + 2, row * TILE_SIZE + 2, TILE_SIZE - 4, TILE_SIZE - 4))
-            text = FONT.render(str(tile), True, WHITE)
+            text = FONT.render(str(grid[row][col]), True, WHITE)
             text_rect = text.get_rect(center=(col * TILE_SIZE + TILE_SIZE // 2, row * TILE_SIZE + TILE_SIZE // 2))
             screen.blit(text, text_rect)
 
