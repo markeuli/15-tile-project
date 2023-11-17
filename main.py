@@ -3,9 +3,10 @@ import sys
 import random
 
 # Constants
-WIDTH, HEIGHT = 400, 400
+
 GRID_SIZE = 4
-TILE_SIZE = WIDTH // GRID_SIZE
+WIDTH, HEIGHT = GRID_SIZE * 100, (GRID_SIZE + 1) * 100
+TILE_SIZE = 100
 BUTTON_SIZE = TILE_SIZE // 2
 
 # Colors
@@ -39,6 +40,35 @@ def shuffle_board():
                 grid[row][col] = 0
                 empty_row, empty_col = row, col
 
+def check_win():
+    for row in range(GRID_SIZE):
+        for col in range(GRID_SIZE):
+            if grid[row][col] != row * GRID_SIZE + col + 1:
+                return False
+    return True
+
+# TODO: Add a function to check if the tile puzzle is solvable
+# https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
+def check_solvable():
+    pass
+
+def generate_solvable_board():
+    while not check_solvable():
+        shuffle_board()
+    return grid
+
+#TODO: Add a function to solve the puzzle using BFS
+def BFS_solve():
+    pass
+
+#TODO: Add a function to solve the puzzle using A*
+def A_star_solve():
+    pass
+
+#TODO: Add a function to solve the puzzle using IDA*
+def IDA_star_solve():
+    pass
+
 # Main game loop
 while True:
     for event in pygame.event.get():
@@ -57,6 +87,19 @@ while True:
                 # Swap the clicked tile with the empty tile
                 grid[row][col], grid[empty_row][empty_col] = grid[empty_row][empty_col], grid[row][col]
                 empty_row, empty_col = row, col
+            elif (GRID_SIZE < row < GRID_SIZE + 1):
+                match col:
+
+                    case 0:
+                        generate_solvable_board()
+                    case 1:
+                        BFS_solve()
+                    case 2: 
+                        A_star_solve()
+                    case 3:
+                        IDA_star_solve()
+                    case _:
+                        pass
 
     # Draw the game board
     screen.fill(WHITE)
