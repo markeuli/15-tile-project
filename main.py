@@ -69,9 +69,10 @@ while True:
                     case _:
                         pass
                 if sequence:
+                    print("Recieved sequence: ", sequence) # REMOVE LATER
                     for move in sequence:
                         main_view.board.perform_action(move)
-                        time.sleep(0.1)
+                        time.sleep(1)
 
     # Draw the game board
     screen.fill(WHITE)

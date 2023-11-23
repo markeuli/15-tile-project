@@ -128,16 +128,16 @@ class State:
         return False
     
     def generate_legal_successors(self):
-        print("TreeSearch: Generating successors...") # REMOVE LATER
+        print("TreeSearch: Generating successors...........................................") # REMOVE LATER
         successors = []
         for move in SlidingPuzzle.MOVES:
             new_row, new_col = self.emptyRow + move[0], self.emptyCol + move[1]
             # Check if the move is legal
             if SlidingPuzzle.check_legal_move(self, move):
+                new_grid = [row.copy() for row in self.grid]
                 # Swap the empty tile and the adjacent tile
-                self.grid[self.emptyRow][self.emptyCol], self.grid[new_row][new_col] = self.grid[new_row][new_col], self.grid[self.emptyRow][self.emptyCol]
-                successors.append(State(self.size, self.grid, self, move, self.path_cost + 1))
-                # Swap the empty tile and the adjacent tile back
-                self.grid[self.emptyRow][self.emptyCol], self.grid[new_row][new_col] = self.grid[new_row][new_col], self.grid[self.emptyRow][self.emptyCol]
+                new_grid[self.emptyRow][self.emptyCol], new_grid[new_row][new_col] = new_grid[new_row][new_col], new_grid[self.emptyRow][self.emptyCol]
+                successors.append(State(self.size, new_grid, self, move, self.path_cost + 1))
+                print("TreeSearch: Added successor", new_grid) # REMOVE LATER
         print("TreeSearch: Number of successors: ", len(successors)) # REMOVE LATER
         return successors

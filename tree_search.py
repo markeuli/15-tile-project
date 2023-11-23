@@ -26,32 +26,34 @@ class TreeSearch:
         frontier = []
         # add initial state to the frontier
         frontier.append(self.initial_state)
+
+        visit_counter = 0
+        timer = 0
         # while frontier is not empty
         while frontier:
             # remove the first state from the frontier
             state = frontier.pop(0)
             # add state to visited
             visited.add(state)
+            visit_counter += 1
             print("Visited length: ", len(visited))
+
             # if state is the goal state
             if state.goal_test():
                 # return sequence
                 print("Goal state found") # REMOVE LATER
+                print(state.grid)
                 while (state.parent != None):
                     sequence.append(state.action)
                     state = state.parent
+                sequence.reverse()
                 return sequence
             # for each possible move
             for new_state in state.generate_legal_successors():
                 # if new state is not in visited
-                print("Checking new state") # REMOVE LATER
-                print(new_state in visited) # REMOVE LATER
-                print(new_state.grid) # REMOVE LATER
                 if new_state not in visited:
                     # add new state to frontier
-                    print("Adding new state to frontier") # REMOVE LATER
                     frontier.append(new_state)
-            print("Frontier size: ", len(frontier))
         return sequence;
     '''
     #TODO: Add a function to solve the puzzle using A*
