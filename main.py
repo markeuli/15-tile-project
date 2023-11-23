@@ -1,18 +1,26 @@
 import pygame
 import sys
-import random
+import time
+
+#local imports
+from games import *
+from tree_search import TreeSearch
 
 # Constants
 
 GRID_SIZE = 4
-WIDTH, HEIGHT = GRID_SIZE * 100, (GRID_SIZE + 1) * 100
-TILE_SIZE = 100
-BUTTON_SIZE = TILE_SIZE // 2
+WIDTH, HEIGHT = GRID_SIZE * 50, (GRID_SIZE + 1) * 50
+TILE_SIZE = 50
+BUTTON_WIDTH, BUTTON_HEIGHT = WIDTH // 8 , 50
 
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GREY = (128, 128, 128)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+PURPLE = (128, 0, 128)
+GREEN = (0, 255, 0)
 
 # Initialize Pygame
 pygame.init()
@@ -21,53 +29,8 @@ FONT = pygame.font.Font(None, 36)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Sliding Tile Puzzle")
 
-# Initialize game board
-grid = [[i + j * GRID_SIZE + 1 for i in range(GRID_SIZE)] for j in range(GRID_SIZE)]
-grid[GRID_SIZE - 1][GRID_SIZE - 1] = 0  # Empty tile
-empty_row, empty_col = GRID_SIZE - 1, GRID_SIZE - 1
-
-
-# Shuffle the board randomly
-def shuffle_board():
-    global empty_row, empty_col
-    tile_numbers = list(range(1, GRID_SIZE * GRID_SIZE))
-    random.shuffle(tile_numbers)
-    for row in range(GRID_SIZE):
-        for col in range(GRID_SIZE):
-            if tile_numbers:
-                grid[row][col] = tile_numbers.pop(0)
-            else:
-                grid[row][col] = 0
-                empty_row, empty_col = row, col
-
-def check_win():
-    for row in range(GRID_SIZE):
-        for col in range(GRID_SIZE):
-            if grid[row][col] != row * GRID_SIZE + col + 1:
-                return False
-    return True
-
-# TODO: Add a function to check if the tile puzzle is solvable
-# https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
-def check_solvable():
-    pass
-
-def generate_solvable_board():
-    while not check_solvable():
-        shuffle_board()
-    return grid
-
-#TODO: Add a function to solve the puzzle using BFS
-def BFS_solve():
-    pass
-
-#TODO: Add a function to solve the puzzle using A*
-def A_star_solve():
-    pass
-
-#TODO: Add a function to solve the puzzle using IDA*
-def IDA_star_solve():
-    pass
+# Initialize the game board
+main_view = SlidingPuzzle(GRID_SIZE)
 
 # Main game loop
 while True:
@@ -79,33 +42,42 @@ while True:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             row = mouse_y // TILE_SIZE
             col = mouse_x // TILE_SIZE
-            if (
-                abs(row - empty_row) + abs(col - empty_col) == 1
-                and 0 <= row < GRID_SIZE
-                and 0 <= col < GRID_SIZE
-            ):
-                # Swap the clicked tile with the empty tile
-                grid[row][col], grid[empty_row][empty_col] = grid[empty_row][empty_col], grid[row][col]
-                empty_row, empty_col = row, col
-            elif (GRID_SIZE < row < GRID_SIZE + 1):
+            print("Clicked on tile: ", row, col) # REMOVE LATER 
+            moved = main_view.board.perform_action((row - main_view.board.emptyRow, col - main_view.board.emptyCol))
+            if moved:
+                print("Moved tile") # REMOVE LATER  
+            if (row == GRID_SIZE) and (0 <= col < 4):
+                ts = TreeSearch(main_view.board, 
+                                main_view.board.goal_test, 
+                                main_view.board.generate_legal_successors, 
+                                main_view.board.calc_heuristic)
+                sequence = []
+                col = mouse_x // BUTTON_SIZE
+                print("Button pressed: ", col) # REMOVE LATER
                 match col:
-
+                    
                     case 0:
-                        generate_solvable_board()
+                        main_view.shuffle_board()
                     case 1:
-                        BFS_solve()
+                        sequence = ts.BFS_solve()
                     case 2: 
-                        A_star_solve()
+                        #A_star_solve()
+                        pass
                     case 3:
-                        IDA_star_solve()
+                        #IDA_star_solve()
+                        pass
                     case _:
                         pass
+                if sequence:
+                    for move in sequence:
+                        main_view.board.perform_action(move)
+                        time.sleep(0.1)
 
     # Draw the game board
     screen.fill(WHITE)
     for row in range(GRID_SIZE):
         for col in range(GRID_SIZE):
-            tile = grid[row][col]
+            tile = main_view.board.grid[row][col]
             if tile != 0:
                 pygame.draw.rect(screen, BLACK, (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE))
                 text = FONT.render(str(tile), True, WHITE)
@@ -113,13 +85,30 @@ while True:
                 screen.blit(text, text_rect)
 
     # Draw buttons around the empty tile
-    for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-        row, col = empty_row + dr, empty_col + dc
-        if 0 <= row < GRID_SIZE and 0 <= col < GRID_SIZE:
-            pygame.draw.rect(screen, BLACK, (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE))
-            pygame.draw.rect(screen, GREY, (col * TILE_SIZE + 2, row * TILE_SIZE + 2, TILE_SIZE - 4, TILE_SIZE - 4))
-            text = FONT.render(str(grid[row][col]), True, WHITE)
-            text_rect = text.get_rect(center=(col * TILE_SIZE + TILE_SIZE // 2, row * TILE_SIZE + TILE_SIZE // 2))
-            screen.blit(text, text_rect)
+    
+
+
+    # Draw the buttons for the algorithms at the bottom of the screen, and the shuffle button using RED, BLUE, YELLOW, and GREEN
+    BUTTON_SIZE = WIDTH // 4
+
+    pygame.draw.rect(screen, RED,       (0              , GRID_SIZE * TILE_SIZE, BUTTON_SIZE, BUTTON_HEIGHT))
+    pygame.draw.rect(screen, BLUE,      (BUTTON_SIZE    , GRID_SIZE * TILE_SIZE, BUTTON_SIZE, BUTTON_HEIGHT))
+    pygame.draw.rect(screen, PURPLE,    (2 * BUTTON_SIZE, GRID_SIZE * TILE_SIZE, BUTTON_SIZE, BUTTON_HEIGHT))
+    pygame.draw.rect(screen, GREEN,     (3 * BUTTON_SIZE, GRID_SIZE * TILE_SIZE, BUTTON_SIZE, BUTTON_HEIGHT))
+
+    # Have the buttons display the names of the algorithms
+    button_names = ["Shuffle", "BFS", "A*", "IDA*"]
+    button_positions = [1, 3, 5, 7]
+    button_colors = [RED, BLUE, PURPLE, GREEN]
+
+    for name, position, color in zip(button_names, button_positions, button_colors):
+        text = FONT.render(name, True, WHITE)
+        text_rect = text.get_rect(center=(position * BUTTON_WIDTH, GRID_SIZE * TILE_SIZE + BUTTON_HEIGHT // 2))
+        screen.blit(text, text_rect)
+
+    # Link the buttons to the algorithms
+    
+
+    
 
     pygame.display.flip()
