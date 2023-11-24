@@ -39,8 +39,12 @@ class TreeSearch:
             # add state to visited
             visited.add(state)
             visit_counter += 1
-            
 
+            clear_console()
+            print("BFS solving...")
+            print("Visited: ", visit_counter)
+            print("Time: ", (time.time() - timer) // 1, " seconds")
+            
             # if state is the goal state
             if state.goal_test():
                 # return sequence
@@ -55,6 +59,9 @@ class TreeSearch:
                 if new_state not in visited:
                     # add new state to frontier
                     frontier.append(new_state)
+
+        clear_console()
+        print("BFS solved.")
         print("Visited: ", visit_counter)
         print("Time: ", (time.time() - timer) // 1, " seconds")
         return sequence;
@@ -66,9 +73,19 @@ class TreeSearch:
         frontier = heapdict.heapdict()
         frontier[self.initial_state] = 0
         visited[self.initial_state] = 0
+        visit_counter = 0
+        timer = time.time()
 
         while frontier:
             state, eval = frontier.popitem()
+
+            visit_counter += 1
+            clear_console()
+            print("A* solving...")
+            print("Heuristic: ", state.heuristic)
+            print("Visited: ", visit_counter)
+            print("Time: ", (time.time() - timer) // 1, " seconds")
+
             if state.goal_test():
                 # might need to change logic here
                 # if state is the goal state, we need to make sure we return the sequence of moves that got us to the goal state
@@ -84,9 +101,13 @@ class TreeSearch:
                 # Handle the case where the new state is either not visited or the evaluation is less than that of the visited state
                 # This has to be different from the BFS solution because our visited set is now a dictionary with evals
                 if new_state not in visited or new_priority < visited[new_state]:
-                    print("New state: ", new_state.grid, "Eval: ", new_priority)
                     frontier[new_state] = new_priority
                     visited[new_state] = new_priority
+
+        clear_console()
+        print("A* solving...")
+        print("Visited: ", visit_counter)
+        print("Time: ", (time.time() - timer) // 1, " seconds")
         return sequence
 
     '''
@@ -94,3 +115,6 @@ class TreeSearch:
     def IDA_star_solve():
         pass
     '''
+
+def clear_console():
+    os.system('cls' if os.name == 'nt' else 'clear')

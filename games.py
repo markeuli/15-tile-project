@@ -23,12 +23,20 @@ class SlidingPuzzle:
     
     def shuffle_board(self):
         print("Shuffling the board...")
-        num_moves = 50;
-        #num_moves = random.randint(10, 20) #test with smaller numbers
+        moves = self.MOVES.copy()
+
+        
+        prev_move = (1, 0) # down
+        num_moves = 8 # test with smaller numbers
+        #num_moves = random.randint(10, 20) # test with smaller numbers
         #num_moves = random.randint(100, 200)
         for _ in range(num_moves):  # Perform between 100 and 200 random moves
-            move = random.choice(self.MOVES)
-            self.board.perform_action(move)
+            # Choose a random move, and perform it. If the move is not legal, choose another move.
+            move = random.choice(moves)
+            # Make sure the same move is not repeated twice in a row, and attempt to perform the move
+            # Note: This is not a perfect way to ensure the move won't be undone, it just won't happen immediately (short num_moves)
+            while move == prev_move or not self.board.perform_action(move):
+                move = random.choice(moves)
         print("Finished shuffling the board.")
         return self.board
 

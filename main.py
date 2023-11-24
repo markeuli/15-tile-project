@@ -8,7 +8,7 @@ from tree_search import TreeSearch
 
 # Constants
 
-GRID_SIZE = 10
+GRID_SIZE = 16
 WIDTH, HEIGHT = GRID_SIZE * 50, (GRID_SIZE + 1) * 50
 TILE_SIZE = 50
 BUTTON_WIDTH, BUTTON_HEIGHT = WIDTH // 8 , 50
@@ -74,7 +74,6 @@ while True:
                     print("Recieved sequence: ", sequence) # REMOVE LATER
                     for move in sequence:
                         main_view.board.perform_action(move)
-                        time.sleep(1)
 
     # Draw the game board
     screen.fill(WHITE)
