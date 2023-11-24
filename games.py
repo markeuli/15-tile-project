@@ -23,38 +23,53 @@ class SlidingPuzzle:
     
     def shuffle_board(self):
         print("Shuffling the board...")
-        num_moves = random.randint(10, 20) #test with smaller numbers
+        num_moves = 50;
+        #num_moves = random.randint(10, 20) #test with smaller numbers
         #num_moves = random.randint(100, 200)
         for _ in range(num_moves):  # Perform between 100 and 200 random moves
             move = random.choice(self.MOVES)
             self.board.perform_action(move)
         print("Finished shuffling the board.")
         return self.board
-    
-    '''
-    # TODO: Add a function to check if the tile puzzle is solvable
-    # Not required, since we generate only solvable boards with shuffle_board()
-    # https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
-    def check_solvable():
-        pass
-    '''
 
 class State:
     '''
     State class for the sliding tile puzzle: Needed by TreeSearch class to "understand" the
     current state of the puzzle and to generate new states by applying moves to the current state.
 
-    Required:
+    Required arguments:
+    - size: the size of the puzzle
+    Optional
     - grid: the current state of the puzzle
     - parent: the previous state of the puzzle
     - action: the move that was taken to get to the current state
     - path_cost: the cost of the path from the initial state to the current state
 
-    Optional:
-    - calc_heuristic: the estimated cost of the path from the current state to the goal state
-    '''
-    
+    attributes:
+    - size: the size of the puzzle
+    - grid: the current state of the puzzle
+    - emptyRow: the row of the empty tile
+    - emptyCol: the column of the empty tile
+    - path_cost: the cost of the path from the initial state to the current state
+    - parent: the previous state of the puzzle
+    - action: the move that was taken to get to the current state
+    - heuristic: the estimated cost of the path from the current state to the goal state
+    - eval: the evaluation function for A* and IDA*
 
+    methods:
+    - findEmpty: finds the empty tile in the grid
+    - __hash__: hashes the grid as a tuple of tuples
+    - __eq__: checks if two states are equal
+    - __lt__: checks if the evaluation function of the current state is less than the evaluation function of another state
+    - __gt__: checks if the evaluation function of the current state is greater than the evaluation function of another state
+    - calc_heuristic: calculates the heuristic of the current state
+    - goal_test: checks if the current state is the goal state
+    - perform_action: performs a move on the current state
+    - generate_legal_successors: generates all possible moves from the current state
+
+    NOTE: These methods are required by the TreeSearch class, but they can be modified to suit the needs of the game.
+    To use the TreeSearch class with a different game, you will need to implement a similar State class with the same methods for your game.
+    '''
     def __init__(self, size, grid=None, parent=None, action=None, path_cost=0):
         self.size = size
         if grid is None:
@@ -128,16 +143,14 @@ class State:
         return False
     
     def generate_legal_successors(self):
-        print("TreeSearch: Generating successors...........................................") # REMOVE LATER
         successors = []
         for move in SlidingPuzzle.MOVES:
             new_row, new_col = self.emptyRow + move[0], self.emptyCol + move[1]
             # Check if the move is legal
             if SlidingPuzzle.check_legal_move(self, move):
+                # Create a copy of the grid
                 new_grid = [row.copy() for row in self.grid]
                 # Swap the empty tile and the adjacent tile
                 new_grid[self.emptyRow][self.emptyCol], new_grid[new_row][new_col] = new_grid[new_row][new_col], new_grid[self.emptyRow][self.emptyCol]
                 successors.append(State(self.size, new_grid, self, move, self.path_cost + 1))
-                print("TreeSearch: Added successor", new_grid) # REMOVE LATER
-        print("TreeSearch: Number of successors: ", len(successors)) # REMOVE LATER
         return successors

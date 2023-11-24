@@ -8,7 +8,7 @@ from tree_search import TreeSearch
 
 # Constants
 
-GRID_SIZE = 16
+GRID_SIZE = 10
 WIDTH, HEIGHT = GRID_SIZE * 50, (GRID_SIZE + 1) * 50
 TILE_SIZE = 50
 BUTTON_WIDTH, BUTTON_HEIGHT = WIDTH // 8 , 50
@@ -63,8 +63,8 @@ while True:
                         print("Solving with BFS")
                         sequence = ts.BFS_solve()
                     case 2: 
-                        #A_star_solve()
-                        pass
+                        print("Solving with A*")
+                        sequence = ts.A_star_solve()
                     case 3:
                         #IDA_star_solve()
                         pass

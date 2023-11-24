@@ -1,4 +1,7 @@
 import os
+import queue
+import time
+import heapdict
 
 class TreeSearch:
     '''
@@ -28,7 +31,7 @@ class TreeSearch:
         frontier.append(self.initial_state)
 
         visit_counter = 0
-        timer = 0
+        timer = time.time()
         # while frontier is not empty
         while frontier:
             # remove the first state from the frontier
@@ -36,13 +39,11 @@ class TreeSearch:
             # add state to visited
             visited.add(state)
             visit_counter += 1
-            print("Visited length: ", len(visited))
+            
 
             # if state is the goal state
             if state.goal_test():
                 # return sequence
-                print("Goal state found") # REMOVE LATER
-                print(state.grid)
                 while (state.parent != None):
                     sequence.append(state.action)
                     state = state.parent
@@ -54,12 +55,41 @@ class TreeSearch:
                 if new_state not in visited:
                     # add new state to frontier
                     frontier.append(new_state)
+        print("Visited: ", visit_counter)
+        print("Time: ", (time.time() - timer) // 1, " seconds")
         return sequence;
-    '''
-    #TODO: Add a function to solve the puzzle using A*
+    
     def A_star_solve(self):
-        pass
+        print("A*")
+        sequence = []
+        visited = {}
+        frontier = heapdict.heapdict()
+        frontier[self.initial_state] = 0
+        visited[self.initial_state] = 0
 
+        while frontier:
+            state, eval = frontier.popitem()
+            if state.goal_test():
+                # might need to change logic here
+                # if state is the goal state, we need to make sure we return the sequence of moves that got us to the goal state
+                # but we need to make sure it is the shortest path
+                # double check class notes
+                while state.parent is not None:
+                    sequence.append(state.action)
+                    state = state.parent
+                sequence.reverse()
+                return sequence
+            for new_state in state.generate_legal_successors():
+                new_priority = new_state.eval
+                # Handle the case where the new state is either not visited or the evaluation is less than that of the visited state
+                # This has to be different from the BFS solution because our visited set is now a dictionary with evals
+                if new_state not in visited or new_priority < visited[new_state]:
+                    print("New state: ", new_state.grid, "Eval: ", new_priority)
+                    frontier[new_state] = new_priority
+                    visited[new_state] = new_priority
+        return sequence
+
+    '''
     #TODO: Add a function to solve the puzzle using IDA*
     def IDA_star_solve():
         pass
