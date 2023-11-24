@@ -8,7 +8,7 @@ from tree_search import TreeSearch
 
 # Constants
 
-GRID_SIZE = 4
+GRID_SIZE = 16
 WIDTH, HEIGHT = GRID_SIZE * 50, (GRID_SIZE + 1) * 50
 TILE_SIZE = 50
 BUTTON_WIDTH, BUTTON_HEIGHT = WIDTH // 8 , 50
@@ -46,19 +46,21 @@ while True:
             moved = main_view.board.perform_action((row - main_view.board.emptyRow, col - main_view.board.emptyCol))
             if moved:
                 print("Moved tile") # REMOVE LATER  
+            col = mouse_x // BUTTON_SIZE
             if (row == GRID_SIZE) and (0 <= col < 4):
                 ts = TreeSearch(main_view.board, 
                                 main_view.board.goal_test, 
                                 main_view.board.generate_legal_successors, 
                                 main_view.board.calc_heuristic)
                 sequence = []
-                col = mouse_x // BUTTON_SIZE
+                
                 print("Button pressed: ", col) # REMOVE LATER
                 match col:
                     
                     case 0:
                         main_view.shuffle_board()
                     case 1:
+                        print("Solving with BFS")
                         sequence = ts.BFS_solve()
                     case 2: 
                         #A_star_solve()
