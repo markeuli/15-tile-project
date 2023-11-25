@@ -23,13 +23,15 @@ class SlidingPuzzle:
     
     def shuffle_board(self):
         print("Shuffling the board...")
+        print("Starting heuristic: ", self.board.calc_heuristic()) #REMOVE LATER
         moves = self.MOVES.copy()
 
         
         prev_move = (1, 0) # down
-        num_moves = 8 # test with smaller numbers
+        #num_moves = 8 # test with smaller numbers
         #num_moves = random.randint(10, 20) # test with smaller numbers
-        #num_moves = random.randint(100, 200)
+        num_moves = random.randint(100, 200)
+        print("Number of shuffling moves: ", num_moves)
         for _ in range(num_moves):  # Perform between 100 and 200 random moves
             # Choose a random move, and perform it. If the move is not legal, choose another move.
             move = random.choice(moves)
@@ -37,6 +39,7 @@ class SlidingPuzzle:
             # Note: This is not a perfect way to ensure the move won't be undone, it just won't happen immediately (short num_moves)
             while move == prev_move or not self.board.perform_action(move):
                 move = random.choice(moves)
+        print("Ending heuristic: ", self.board.calc_heuristic()) #REMOVE LATER
         print("Finished shuffling the board.")
         return self.board
 
@@ -91,8 +94,8 @@ class State:
         self.path_cost = path_cost
         self.parent = parent
         self.action = action
-        self.heuristic = 0
-        self.eval = self.path_cost + self.calc_heuristic()
+        self.heuristic = self.calc_heuristic()
+        self.eval = self.path_cost + self.heuristic
 
     def findEmpty(self):
         size = len(self.grid)

@@ -75,7 +75,7 @@ class TreeSearch:
         visited[self.initial_state] = 0
         visit_counter = 0
         timer = time.time()
-
+        heuristics = []
         while frontier:
             state, eval = frontier.popitem()
 
@@ -83,6 +83,9 @@ class TreeSearch:
             clear_console()
             print("A* solving...")
             print("Heuristic: ", state.heuristic)
+
+            #avg heuristic
+            heuristics.append(state.heuristic)
             print("Visited: ", visit_counter)
             print("Time: ", (time.time() - timer) // 1, " seconds")
 
@@ -95,6 +98,15 @@ class TreeSearch:
                     sequence.append(state.action)
                     state = state.parent
                 sequence.reverse()
+
+                clear_console()
+                print("A* solving...")
+                print("Visited: ", visit_counter)
+                print("Time final: ", (time.time() - timer) // 1, " seconds")
+                print("Avg heuristic: ", sum(heuristics) / len(heuristics))
+                print("Min heuristic: ", min(heuristics))
+                print("Max heuristic: ", max(heuristics))
+
                 return sequence
             for new_state in state.generate_legal_successors():
                 new_priority = new_state.eval
@@ -107,7 +119,10 @@ class TreeSearch:
         clear_console()
         print("A* solving...")
         print("Visited: ", visit_counter)
-        print("Time: ", (time.time() - timer) // 1, " seconds")
+        print("Time final: ", (time.time() - timer) // 1, " seconds")
+        print("Avg heuristic: ", sum(heuristics) / len(heuristics))
+        print("Min heuristic: ", min(heuristics))
+        print("Max heuristic: ", max(heuristics))
         return sequence
 
     '''
