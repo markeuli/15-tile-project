@@ -8,7 +8,7 @@ from tree_search import TreeSearch
 
 # Constants
 
-GRID_SIZE = 16
+GRID_SIZE = 5
 WIDTH, HEIGHT = GRID_SIZE * 50, (GRID_SIZE + 1) * 50
 TILE_SIZE = 50
 BUTTON_WIDTH, BUTTON_HEIGHT = WIDTH // 8 , 50
