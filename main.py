@@ -54,7 +54,7 @@ while True:
                 match col:
                     
                     case 0:
-                        main_view.shuffle_board(10)
+                        main_view.shuffle_board(50)
                     case 1:
                         print("Solving with BFS")
                         sequence = ts.BFS_solve()

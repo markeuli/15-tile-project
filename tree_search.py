@@ -3,6 +3,9 @@ import queue
 import time
 import heapdict
 
+# Constants
+TIME_LIMIT = 10 # seconds
+
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -15,6 +18,9 @@ class TreeSearch:
     - successor_function: a function that returns a list of possible moves from the current state
     - heuristic: a function that returns the estimated cost of the path from the current state to the goal state (if applicable)
     '''
+
+    
+
     #To initialize the class, you need to pass the initial state of the puzzle, the goal test function, the successor function, and the heuristic function (if applicable)
     def __init__(self, initial_state):
         # initialize state object implemented in game
@@ -26,7 +32,6 @@ class TreeSearch:
         self.bound = 0
 
     def BFS_solve(self):
-        print("BFS")
         sequence = []
         visited = set()
         frontier = []
@@ -40,6 +45,12 @@ class TreeSearch:
             visited.add(state)
             self.visit_counter += 1
 
+            #termination condition: time limit exceeded
+            if (time.time() - self.timer) // 1 > TIME_LIMIT: # 5 minute time limit
+                print("BFS ERROR: Time limit exceeded.")
+                self.timer = None
+                return sequence
+
             '''
             Console output for debugging
             clear_console()
@@ -49,6 +60,7 @@ class TreeSearch:
             print("Visited/Time: ", visit_counter / (time.time() - timer))
             '''
             if state.goal_test():
+                self.timer = time.time() - self.timer
                 while (state.parent != None):
                     sequence.append(state.action)
                     state = state.parent
@@ -60,7 +72,6 @@ class TreeSearch:
         return sequence;
     
     def A_star_solve(self):
-        print("A*")
         sequence = []
         visited = {}
         frontier = heapdict.heapdict()
@@ -74,22 +85,30 @@ class TreeSearch:
             self.visit_counter += 1
 
             if state.goal_test():
+                self.timer = time.time() - self.timer
                 while state.parent is not None:
                     sequence.append(state.action)
                     state = state.parent
                 sequence.reverse()
-
-                '''
-                Console output for debugging
-                clear_console()
-                print("A* solving...")
-                print("Visited: ", visit_counter)
-                print("Time final: ", (time.time() - timer) // 1, " seconds")
-                print("Avg heuristic: ", sum(heuristics) / len(heuristics))
-                print("Min heuristic: ", min(heuristics))
-                print("Max heuristic: ", max(heuristics))
-                '''
                 return sequence
+
+            #termination condition: time limit exceeded
+            if (time.time() - self.timer) // 1 > TIME_LIMIT: 
+                print("A* ERROR: Time limit exceeded.")
+                self.timer = None
+                return sequence
+
+            '''
+            Console output for debugging
+            clear_console()
+            print("A* solving...")
+            print("Visited: ", visit_counter)
+            print("Time final: ", (time.time() - timer) // 1, " seconds")
+            print("Avg heuristic: ", sum(heuristics) / len(heuristics))
+            print("Min heuristic: ", min(heuristics))
+            print("Max heuristic: ", max(heuristics))
+            '''
+                
             for new_state in state.generate_legal_successors():
                 new_priority = new_state.eval
                 # Handle the case where the new state is either not visited or the evaluation is less than that of the visited state
@@ -123,9 +142,18 @@ class TreeSearch:
         f = state.eval
         if f > bound:
             return f
+        
         if state.goal_test():
+            self.timer = time.time() - self.timer
             return "FOUND"
+        
         min = float('inf')
+
+        #termination condition: time limit exceeded
+        if (time.time() - self.timer) // 1 > TIME_LIMIT: # 5 minute time limit
+            print("A* ERROR: Time limit exceeded.")
+            self.timer = None
+            return sequence
 
         self.visit_counter += 1
         '''

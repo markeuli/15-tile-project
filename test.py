@@ -26,9 +26,9 @@ bfs_times = []
 a_star_times = []
 ida_star_times = []
 
-bfs_visited = []
-a_star_visited = []
-ida_star_visited = []
+bfs_visited_s = []
+a_star_visited_s = []
+ida_star_visited_s = []
 
 shuffles = [10, 25, 50, 100, 250]
 
@@ -40,14 +40,14 @@ for shuffle in shuffles:
 
     #Solve with BFS
     bfs_sequence = ts.BFS_solve()
-    bfs_time = time.time() - ts.timer
+    bfs_time = ts.timer
     bfs_visited = ts.visit_counter
     print("BFS Solution: ", bfs_sequence)
     print("BFS Solution Length: ", len(bfs_sequence))
     print("BFS Time: ", bfs_time)
     print("BFS Visited: ", bfs_visited)
     bfs_times.append(bfs_time)
-    bfs_visited.append(bfs_visited)
+    bfs_visited_s.append(bfs_visited)
 
 
     #Solve with A*
@@ -59,7 +59,7 @@ for shuffle in shuffles:
     print("A* Time: ", a_star_time)
     print("A* Visited: ", a_star_visited)
     a_star_times.append(a_star_time)
-    a_star_visited.append(a_star_visited)
+    a_star_visited_s.append(a_star_visited)
 
     #Solve with IDA*
     ida_star_sequence = ts.IDA_star_solve()
@@ -70,9 +70,28 @@ for shuffle in shuffles:
     print("IDA* Time: ", ida_star_time)
     print("IDA* Visited: ", ida_star_visited)
     ida_star_times.append(ida_star_time)
-    ida_star_visited.append(ida_star_visited)
+    ida_star_visited_s.append(ida_star_visited)
 
 #Graph results
+plt.plot(shuffles, bfs_times, label="BFS times")
+plt.plot(shuffles, a_star_times, label="A* times")
+plt.plot(shuffles, ida_star_times, label="IDA* times")
+
+plt.xlabel("Number of Shuffles")
+plt.ylabel("Time (s)")
+plt.title("Time to Solve Puzzle vs Number of Shuffles")
+plt.legend()
+plt.show()
+
+plt.plot(shuffles, bfs_visited_s, label="BFS visited")
+plt.plot(shuffles, a_star_visited_s, label="A* visited")
+plt.plot(shuffles, ida_star_visited_s, label="IDA* visited")
+
+plt.xlabel("Number of Shuffles")
+plt.ylabel("Visited Nodes")
+plt.title("Visited Nodes vs Number of Shuffles")
+plt.legend()
+plt.show()
 
 
 
