@@ -48,17 +48,13 @@ while True:
                 print("Moved tile") # REMOVE LATER  
             col = mouse_x // BUTTON_SIZE
             if (row == GRID_SIZE) and (0 <= col < 4):
-                ts = TreeSearch(main_view.board, 
-                                main_view.board.goal_test, 
-                                main_view.board.generate_legal_successors, 
-                                main_view.board.calc_heuristic)
+                ts = TreeSearch(main_view.board) # Initialize the tree search object
                 sequence = []
                 
-                print("Button pressed: ", col) # REMOVE LATER
                 match col:
                     
                     case 0:
-                        main_view.shuffle_board()
+                        main_view.shuffle_board(10)
                     case 1:
                         print("Solving with BFS")
                         sequence = ts.BFS_solve()
