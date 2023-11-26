@@ -30,7 +30,7 @@ class SlidingPuzzle:
         prev_move = (1, 0) # down
         #num_moves = 8 # test with smaller numbers
         #num_moves = random.randint(10, 20) # test with smaller numbers
-        num_moves = random.randint(100, 200)
+        num_moves = 10000
         print("Number of shuffling moves: ", num_moves)
         for _ in range(num_moves):  # Perform between 100 and 200 random moves
             # Choose a random move, and perform it. If the move is not legal, choose another move.
@@ -130,7 +130,7 @@ class State:
         for i in range(size):
             for j in range(size):
                 if self.grid[i][j] != 0:
-                    distance += abs(i - (self.grid[i][j] // size)) + abs(j - (self.grid[i][j] % size)) #calculate Manhattan distance for each point
+                    distance += abs(i - ((self.grid[i][j]  - 1) // size)) + abs(j - (self.grid[i][j] - 1) % size) #calculate Manhattan distance for each point
         self.heuristic = distance
         return distance
     
