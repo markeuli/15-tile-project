@@ -44,6 +44,7 @@ class TreeSearch:
             print("BFS solving...")
             print("Visited: ", visit_counter)
             print("Time: ", (time.time() - timer) // 1, " seconds")
+            print("Visited/Time: ", visit_counter / (time.time() - timer))
             
             # if state is the goal state
             if state.goal_test():
@@ -64,6 +65,7 @@ class TreeSearch:
         print("BFS solved.")
         print("Visited: ", visit_counter)
         print("Time: ", (time.time() - timer) // 1, " seconds")
+        print("Visited/Time: ", visit_counter / (time.time() - timer))
         return sequence;
     
     def A_star_solve(self):
@@ -120,16 +122,39 @@ class TreeSearch:
         print("A* solving...")
         print("Visited: ", visit_counter)
         print("Time final: ", (time.time() - timer) // 1, " seconds")
+        print("Visited/Time: ", visit_counter / (time.time() - timer))
         print("Avg heuristic: ", sum(heuristics) / len(heuristics))
         print("Min heuristic: ", min(heuristics))
         print("Max heuristic: ", max(heuristics))
         return sequence
 
-    '''
-    #TODO: Add a function to solve the puzzle using IDA*
-    def IDA_star_solve():
-        pass
-    '''
+    # IDA* implementation using psuedocode from https://en.wikipedia.org/wiki/Iterative_deepening_A*
+    def IDA_star_solve(self):
+        bound = self.initial_state.heuristic
+        sequence = [] #sequence of actions
+        while True:
+            t = self.search(self.initial_state, bound, sequence)
+            if t == "FOUND":
+                return sequence
+            if t == float('inf'):
+                return []
+            bound = t
+
+    def search(self, state, bound, sequence):
+        f = state.eval
+        if f > bound:
+            return f
+        if state.goal_test():
+            return "FOUND"
+        min = float('inf')
+        for new_state in state.generate_legal_successors():
+            t = self.search(new_state, bound, sequence)
+            if t == "FOUND":
+                sequence.append(new_state.action)
+                return "FOUND"
+            if t < min:
+                min = t
+        return min
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
