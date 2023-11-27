@@ -4,7 +4,7 @@ import time
 import heapdict
 
 # Constants
-TIME_LIMIT = 10 # seconds
+TIME_LIMIT = 10 * 60 # seconds
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -134,6 +134,11 @@ class TreeSearch:
             if t == "FOUND":
                 sequence.reverse()
                 return sequence
+            
+            #termination condition: time limit exceeded
+            if t == "ERROR":
+                return sequence
+            
             if t == float('inf'):
                 return []
             self.bound = t
@@ -151,9 +156,9 @@ class TreeSearch:
 
         #termination condition: time limit exceeded
         if (time.time() - self.timer) // 1 > TIME_LIMIT: # 5 minute time limit
-            print("A* ERROR: Time limit exceeded.")
+            print("IDA* ERROR: Time limit exceeded.")
             self.timer = None
-            return sequence
+            return "ERROR"
 
         self.visit_counter += 1
         '''
@@ -166,6 +171,8 @@ class TreeSearch:
         '''
         for new_state in state.generate_legal_successors():
             t = self.search(new_state, bound, sequence)
+            if t == "ERROR":
+                return "ERROR"
             if t == "FOUND":
                 sequence.append(new_state.action)
                 return "FOUND"

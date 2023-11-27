@@ -24,10 +24,7 @@ class SlidingPuzzle:
     def shuffle_board(self, num_moves=100):
         print("Shuffling the board...")
         moves = self.MOVES.copy()
-
-        
         prev_move = (1, 0) # down
-        print("Number of shuffling moves: ", num_moves)
         for _ in range(num_moves):  # Perform between 100 and 200 random moves
             # Choose a random move, and perform it. If the move is not legal, choose another move.
             move = random.choice(moves)
@@ -36,8 +33,6 @@ class SlidingPuzzle:
             while move == prev_move or not self.board.perform_action(move):
                 move = random.choice(moves)
             prev_move = move
-        print("Ending heuristic: ", self.board.calc_heuristic()) #REMOVE LATER
-        print("Finished shuffling the board.")
         return self.board
 
 class State:
