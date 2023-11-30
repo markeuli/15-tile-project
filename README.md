@@ -1,7 +1,7 @@
 # 15 Tile Project
 ## By: Mark Ulicnik
 
-#Installation
+# Installation
 
 After installing the directory, navigate to the root directory and run:
 ```
